@@ -2,39 +2,68 @@
 Optimizer.
 """
 
+from core.cost_engine import CostEngine
+from core.provider_selector import ProviderSelector
+from core.ranking import RankingEngine
 from core.registry import ModelRegistry
+from core.scoring import ScoringEngine
+from core.strategy_engine import StrategyEngine
 
 from domain import Recommendation
 from domain import TaskProfile
-from domain.profile import TaskSize
-from domain.task import BudgetLevel
 
 
 class Optimizer:
     """
-    Simple optimization engine.
+    Optimization orchestrator.
     """
 
     def __init__(self) -> None:
         self.registry = ModelRegistry()
 
+        self.strategy_engine = StrategyEngine()
+        self.provider_selector = ProviderSelector()
+        self.cost_engine = CostEngine()
+
+        self.scoring_engine = ScoringEngine()
+        self.ranking_engine = RankingEngine()
+
     def optimize(
         self,
         profile: TaskProfile,
     ) -> Recommendation:
+        """
+        Execute optimization pipeline.
+        """
 
-        strategy = self._select_strategy(profile)
+        # Strategy
+        strategy = self.strategy_engine.recommend(
+            profile,
+        )
 
-        model_name = self._select_model(profile)
+        # Model selection
+        model_name = self.provider_selector.select(
+            profile,
+        )
 
-        capability = self.registry.get(model_name)
+        capability = self.registry.get(
+            model_name,
+        )
 
-        estimated_cost = round(
-            (
-                profile.total_tokens / 100000
-            )
-            * capability.cost_per_100k_tokens,
-            4,
+        # Cost estimation
+        estimated_cost = self.cost_engine.estimate(
+            profile,
+            capability,
+        )
+
+        # Full ranking
+        scores = self.scoring_engine.score_models(
+            profile,
+        )
+
+        ranking = self.ranking_engine.build(
+            profile,
+            scores,
         )
 
         return Recommendation(
@@ -42,37 +71,12 @@ class Optimizer:
             recommended_model=capability.name,
             provider=capability.provider,
             estimated_cost=estimated_cost,
-            estimated_latency_ms=5000
-            if profile.size == TaskSize.LARGE
-            else capability.latency_ms,
+            estimated_latency_ms=capability.latency_ms,
             confidence=0.90,
             reason=(
-                f"Selected from registry using "
+                "Selected from registry using "
                 f"'{strategy}' strategy "
                 f"({capability.provider}:{capability.name})."
             ),
-            ranking=[],
+            ranking=ranking,
         )
-
-    def _select_strategy(
-        self,
-        profile: TaskProfile,
-    ) -> str:
-
-        if profile.size == TaskSize.LARGE:
-            return "parallel_chunk_merge"
-
-        return "direct_execution"
-
-    def _select_model(
-        self,
-        profile: TaskProfile,
-    ) -> str:
-
-        if profile.budget == BudgetLevel.LOW:
-            return "gemini-2.5-flash"
-
-        if profile.size == TaskSize.LARGE:
-            return "claude-sonnet-4"
-
-        return "gpt-4.1-mini"

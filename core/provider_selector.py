@@ -1,6 +1,8 @@
 """
-Strategy Engine.
+Provider Selector.
 """
+
+from core.registry import ModelRegistry
 
 from domain import TaskProfile
 from domain.profile import TaskComplexity
@@ -8,23 +10,26 @@ from domain.profile import TaskSize
 from domain.task import BudgetLevel
 
 
-class StrategyEngine:
+class ProviderSelector:
     """
-    Determine execution strategy.
+    Select the most appropriate model.
     """
 
-    def recommend(
+    def __init__(self) -> None:
+        self.registry = ModelRegistry()
+
+    def select(
         self,
         profile: TaskProfile,
     ) -> str:
 
         if profile.budget == BudgetLevel.LOW:
-            return "cheap_execution"
+            return "gemini-2.5-flash"
 
         if profile.size == TaskSize.LARGE:
-            return "parallel_chunk_merge"
+            return "claude-sonnet-4"
 
         if profile.complexity == TaskComplexity.HIGH:
-            return "deep_reasoning"
+            return "claude-sonnet-4"
 
-        return "direct_execution"
+        return "gpt-4.1-mini"
