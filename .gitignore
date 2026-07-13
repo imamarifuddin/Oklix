@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual Env
+.venv/
+venv/
+
+# VSCode
+.vscode/
+
+# pytest
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# Build
+dist/
+build/
+
+# Environment
+.env
+
+# Windows
+Thumbs.db

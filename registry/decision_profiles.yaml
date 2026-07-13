@@ -1,0 +1,21 @@
+profiles:
+
+  balanced:
+    cost: 0.40
+    quality: 0.35
+    speed: 0.25
+
+  cheapest:
+    cost: 0.70
+    quality: 0.15
+    speed: 0.15
+
+  highest_quality:
+    cost: 0.15
+    quality: 0.70
+    speed: 0.15
+
+  fastest:
+    cost: 0.15
+    quality: 0.20
+    speed: 0.65

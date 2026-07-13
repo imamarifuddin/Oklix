@@ -1,0 +1,99 @@
+models:
+
+  gemini-2.5-flash:
+
+    provider: google
+
+    quality: medium
+
+    speed: fast
+
+    latency_ms: 1500
+
+    cost_per_100k_tokens: 0.10
+
+    context_window: 1048576
+
+    max_output_tokens: 65536
+
+    supports:
+      vision: true
+      reasoning: false
+      function_calling: true
+      json_mode: true
+      streaming: true
+
+    strengths:
+      - summarize
+      - extraction
+      - translation
+      - classification
+
+    weaknesses:
+      - deep_reasoning
+
+
+  gpt-4.1-mini:
+
+    provider: openai
+
+    quality: medium
+
+    speed: medium
+
+    latency_ms: 2500
+
+    cost_per_100k_tokens: 0.35
+
+    context_window: 128000
+
+    max_output_tokens: 16384
+
+    supports:
+      vision: true
+      reasoning: true
+      function_calling: true
+      json_mode: true
+      streaming: true
+
+    strengths:
+      - coding
+      - json
+      - tool_calling
+      - reasoning
+
+    weaknesses:
+      - long_context
+
+
+  claude-sonnet-4:
+
+    provider: anthropic
+
+    quality: high
+
+    speed: medium
+
+    latency_ms: 5000
+
+    cost_per_100k_tokens: 0.80
+
+    context_window: 200000
+
+    max_output_tokens: 64000
+
+    supports:
+      vision: true
+      reasoning: true
+      function_calling: true
+      json_mode: true
+      streaming: true
+
+    strengths:
+      - reasoning
+      - planning
+      - writing
+      - coding
+
+    weaknesses:
+      - cheap_tasks
