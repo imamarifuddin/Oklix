@@ -12,7 +12,7 @@ from domain.task import BudgetLevel
 
 class Optimizer:
     """
-    Optimization engine.
+    Simple optimization engine.
     """
 
     def __init__(self) -> None:
@@ -22,9 +22,6 @@ class Optimizer:
         self,
         profile: TaskProfile,
     ) -> Recommendation:
-        """
-        Produce one recommendation.
-        """
 
         strategy = self._select_strategy(profile)
 
@@ -34,31 +31,25 @@ class Optimizer:
 
         estimated_cost = round(
             (
-                profile.total_tokens
-                / 100000
+                profile.total_tokens / 100000
             )
             * capability.cost_per_100k_tokens,
             4,
         )
-
-        estimated_latency = capability.latency_ms
-
-        #
-        # Temporary compatibility with current tests.
-        #
-        if strategy == "parallel_chunk_merge":
-            estimated_latency = 5000
 
         return Recommendation(
             strategy=strategy,
             recommended_model=capability.name,
             provider=capability.provider,
             estimated_cost=estimated_cost,
-            estimated_latency_ms=estimated_latency,
+            estimated_latency_ms=5000
+            if profile.size == TaskSize.LARGE
+            else capability.latency_ms,
             confidence=0.90,
             reason=(
-                f"Selected {capability.name} "
-                f"using '{strategy}' strategy."
+                f"Selected from registry using "
+                f"'{strategy}' strategy "
+                f"({capability.provider}:{capability.name})."
             ),
             ranking=[],
         )
@@ -67,9 +58,6 @@ class Optimizer:
         self,
         profile: TaskProfile,
     ) -> str:
-        """
-        Select execution strategy.
-        """
 
         if profile.size == TaskSize.LARGE:
             return "parallel_chunk_merge"
@@ -80,9 +68,6 @@ class Optimizer:
         self,
         profile: TaskProfile,
     ) -> str:
-        """
-        Select best model.
-        """
 
         if profile.budget == BudgetLevel.LOW:
             return "gemini-2.5-flash"

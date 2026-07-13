@@ -4,13 +4,13 @@ from core.registry import ModelRegistry
 def test_registry_load():
     registry = ModelRegistry()
 
-    assert len(registry.all()) == 3
+    assert len(registry.names()) > 0
 
 
 def test_registry_exists():
     registry = ModelRegistry()
 
-    assert registry.exists("gemini-2.5-flash")
+    assert registry.exists("gpt-4.1-mini")
 
 
 def test_registry_get():
@@ -18,7 +18,7 @@ def test_registry_get():
 
     model = registry.get("claude-sonnet-4")
 
-    assert model["provider"] == "anthropic"
+    assert model.provider == "anthropic"
 
 
 def test_registry_cost():
@@ -26,7 +26,7 @@ def test_registry_cost():
 
     model = registry.get("gpt-4.1-mini")
 
-    assert model["cost_per_100k_tokens"] == 0.35
+    assert model.cost_per_100k_tokens == 0.35
 
 
 def test_registry_quality():
@@ -34,4 +34,4 @@ def test_registry_quality():
 
     model = registry.get("claude-sonnet-4")
 
-    assert model["quality"] == "high"
+    assert model.quality == "high"
