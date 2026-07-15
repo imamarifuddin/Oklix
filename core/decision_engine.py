@@ -6,17 +6,13 @@ from core.analyzer import Analyzer
 from core.optimizer import Optimizer
 
 from domain import Recommendation
-from domain import TaskRequest
+from domain import TaskProfile, TaskRequest
 
 
 class DecisionEngine:
     """
-    End-to-end decision pipeline.
+    Decision pipeline.
 
-    TaskRequest
-        ↓
-    Analyzer
-        ↓
     TaskProfile
         ↓
     Optimizer
@@ -30,12 +26,15 @@ class DecisionEngine:
 
     def decide(
         self,
-        request: TaskRequest,
+        request: TaskRequest | TaskProfile,
     ) -> Recommendation:
         """
-        Execute the complete decision pipeline.
+        Produce a recommendation from a request or an analyzed task profile.
         """
 
-        profile = self.analyzer.analyze(request)
-
+        profile = (
+            request
+            if isinstance(request, TaskProfile)
+            else self.analyzer.analyze(request)
+        )
         return self.optimizer.optimize(profile)

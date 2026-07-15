@@ -1,14 +1,24 @@
 from pydantic import BaseModel, Field
 
-from domain.ranking import RankedModel
+from .ranking import RankedModel
 
 
 class Recommendation(BaseModel):
+    """
+    Recommendation produced by the optimizer.
+    """
+
+    # Decision Engine recommendation
     strategy: str
+
+    provider: str
 
     recommended_model: str
 
-    provider: str
+    # Current execution backend (MVP)
+    execution_provider: str = "qwen"
+
+    execution_model: str = "qwen-plus"
 
     estimated_cost: float
 
@@ -16,6 +26,6 @@ class Recommendation(BaseModel):
 
     confidence: float
 
-    reason: str
+    reason: str = ""
 
     ranking: list[RankedModel] = Field(default_factory=list)

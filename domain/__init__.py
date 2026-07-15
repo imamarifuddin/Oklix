@@ -36,6 +36,11 @@ from .execution_context import (
     ExecutionContext,
 )
 
+from .tool_call import (
+    ToolCall,
+)
+
+
 __all__ = [
     "TaskRequest",
     "TaskProfile",
@@ -53,4 +58,5 @@ __all__ = [
     "ExecutionPlan",
     "ExecutionResult",
     "ExecutionContext",
+    "ToolCall",
 ]

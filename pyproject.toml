@@ -10,7 +10,7 @@ requires-python = ">=3.11"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["domain*", "core*", "mcp*", "app*"]
+include = ["api*","domain*", "core*", "oklix_mcp*", "app*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

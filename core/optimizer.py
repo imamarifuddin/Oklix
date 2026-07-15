@@ -19,13 +19,16 @@ class Optimizer:
     """
 
     def __init__(self) -> None:
+
         self.registry = ModelRegistry()
 
         self.strategy_engine = StrategyEngine()
         self.provider_selector = ProviderSelector()
+
         self.cost_engine = CostEngine()
 
         self.scoring_engine = ScoringEngine()
+
         self.ranking_engine = RankingEngine()
 
     def optimize(
@@ -36,40 +39,32 @@ class Optimizer:
         Execute optimization pipeline.
         """
 
+        # --------------------------------------------------
         # Strategy
+        # --------------------------------------------------
+
         strategy = self.strategy_engine.recommend(
             profile,
         )
 
-        # Model selection
-        model_name = self.provider_selector.select(
-            profile,
-        )
+        model_name = self.provider_selector.select(profile)
 
-        capability = self.registry.get(
-            model_name,
-        )
+        capability = self.registry.get(model_name)
 
-        # Cost estimation
         estimated_cost = self.cost_engine.estimate(
             profile,
             capability,
         )
 
-        # Full ranking
-        scores = self.scoring_engine.score_models(
-            profile,
-        )
-
-        ranking = self.ranking_engine.build(
-            profile,
-            scores,
-        )
+        scores = self.scoring_engine.score_models(profile)
+        ranking = self.ranking_engine.build(profile, scores)
 
         return Recommendation(
             strategy=strategy,
-            recommended_model=capability.name,
             provider=capability.provider,
+            recommended_model=capability.name,
+            execution_provider="qwen",
+            execution_model="qwen-plus",
             estimated_cost=estimated_cost,
             estimated_latency_ms=capability.latency_ms,
             confidence=0.90,

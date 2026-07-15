@@ -8,9 +8,6 @@ from pydantic import BaseModel
 
 
 class StepType(str, Enum):
-    """
-    Execution step types.
-    """
 
     CHUNK = "chunk"
 
@@ -35,3 +32,11 @@ class ExecutionStep(BaseModel):
     type: StepType
 
     description: str
+
+    provider: str | None = None
+
+    model: str | None = None
+
+    prompt: str = ""
+
+    system_prompt: str = ""

@@ -9,18 +9,20 @@ from domain import (
     StepType,
     TaskProfile,
 )
+
 from domain.profile import TaskSize
 
 
 class ExecutionPlanner:
     """
-    Build an execution plan from the optimizer recommendation.
+    Build execution plan.
     """
 
     def build(
         self,
         profile: TaskProfile,
         recommendation: Recommendation,
+        prompt: str = "",
     ) -> ExecutionPlan:
 
         steps: list[ExecutionStep] = []
@@ -37,22 +39,25 @@ class ExecutionPlanner:
                     ExecutionStep(
                         order=2,
                         type=StepType.PARALLEL,
-                        description="Execute chunks in parallel.",
+                        description="Execute chunks.",
+                        provider=recommendation.execution_provider,
+                        model=recommendation.execution_model,
+                        prompt=prompt,
                     ),
                     ExecutionStep(
                         order=3,
                         type=StepType.MERGE,
-                        description="Merge partial results.",
+                        description="Merge results.",
                     ),
                     ExecutionStep(
                         order=4,
                         type=StepType.VALIDATE,
-                        description="Validate merged output.",
+                        description="Validate output.",
                     ),
                     ExecutionStep(
                         order=5,
                         type=StepType.RETURN,
-                        description="Return final response.",
+                        description="Return response.",
                     ),
                 ]
             )
@@ -64,7 +69,10 @@ class ExecutionPlanner:
                     ExecutionStep(
                         order=1,
                         type=StepType.EXECUTE,
-                        description="Execute selected model.",
+                        description="Execute model.",
+                        provider=recommendation.execution_provider,
+                        model=recommendation.execution_model,
+                        prompt=prompt,
                     ),
                     ExecutionStep(
                         order=2,

@@ -91,6 +91,7 @@ models:
 
     strengths:
       - reasoning
+      - coding
       - planning
       - writing
       - coding

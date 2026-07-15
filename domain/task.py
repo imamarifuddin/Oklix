@@ -27,20 +27,14 @@ class LatencyLevel(str, Enum):
 
 class TaskRequest(BaseModel):
     """
-    Request accepted by the optimizer.
+    Incoming task request.
     """
 
-    task: str = Field(..., description="Task name")
+    task: str
 
-    estimated_input_tokens: int = Field(
-        ...,
-        ge=0,
-    )
+    estimated_input_tokens: int = 0
 
-    estimated_output_tokens: int = Field(
-        ...,
-        ge=0,
-    )
+    estimated_output_tokens: int = 0
 
     budget: BudgetLevel = BudgetLevel.MEDIUM
     quality: QualityLevel = QualityLevel.MEDIUM

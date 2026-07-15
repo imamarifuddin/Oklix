@@ -1,22 +1,6 @@
-from fastapi import FastAPI
+"""Compatibility entry point for the Oklix CLI."""
 
-app = FastAPI(
-    title="Klikin Optimize MCP",
-    version="0.1.0"
-)
+from app.cli import main
 
-
-@app.get("/")
-def root():
-    return {
-        "message": "Welcome to Klikin Optimize MCP"
-    }
-
-
-@app.get("/health")
-def health():
-    return {
-        "status": "ok",
-        "service": "Klikin Optimize MCP",
-        "version": "0.1.0"
-    }
+if __name__ == "__main__":
+    main()

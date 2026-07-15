@@ -1,29 +1,32 @@
 """
-Execution Runtime.
+Runtime layer for Oklix.
 """
 
-from domain import (
-    ExecutionContext,
-    ExecutionPlan,
-)
+from domain import ExecutionContext
+from domain import ExecutionPlan
 
 
 class Runtime:
     """
-    Runtime responsible for executing plans.
+    Runtime environment shared during execution.
     """
 
     def create_context(
         self,
         plan: ExecutionPlan,
     ) -> ExecutionContext:
+        """
+        Create a runtime context from an execution plan.
+        """
 
         context = ExecutionContext()
 
         context.metadata["strategy"] = plan.strategy
 
-        context.log(
-            f"Runtime created for strategy '{plan.strategy}'"
+        context.logs.append(
+            f"Runtime created ({plan.strategy})"
         )
+
+        context.plan = plan
 
         return context

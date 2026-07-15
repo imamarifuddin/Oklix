@@ -1,4 +1,4 @@
-from mcp.tools import recommend_strategy
+from oklix_mcp.tools import recommend_strategy
 
 
 def test_recommend_strategy():

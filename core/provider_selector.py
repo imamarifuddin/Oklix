@@ -2,26 +2,23 @@
 Provider Selector.
 """
 
-from core.registry import ModelRegistry
-
 from domain import TaskProfile
-from domain.profile import TaskComplexity
-from domain.profile import TaskSize
+from domain.profile import TaskComplexity, TaskSize
 from domain.task import BudgetLevel
 
 
 class ProviderSelector:
     """
-    Select the most appropriate model.
+    Select the best model for a task.
     """
-
-    def __init__(self) -> None:
-        self.registry = ModelRegistry()
 
     def select(
         self,
         profile: TaskProfile,
     ) -> str:
+        """
+        Return the recommended model name.
+        """
 
         if profile.budget == BudgetLevel.LOW:
             return "gemini-2.5-flash"
