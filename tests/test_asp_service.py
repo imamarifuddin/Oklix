@@ -1,6 +1,6 @@
 from core.asp.request import ASPRequest
-from core.asp.response import ASPResponse
 from core.asp.service import ASPService
+from domain import DecisionResponse
 
 
 def test_service_exists():
@@ -43,11 +43,10 @@ def test_optimize():
 
     assert isinstance(
         response,
-        ASPResponse,
+        DecisionResponse,
     )
 
-    assert response.recommended_provider != ""
-
-    assert response.recommended_model != ""
-
-    assert response.execution_plan[0].provider == response.recommended_provider
+    assert response.recommendation.provider
+    assert response.recommendation.model
+    assert response.recommendation_id
+    assert response.execution_plan.type == "recommendation_only"

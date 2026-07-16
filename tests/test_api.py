@@ -37,16 +37,15 @@ def test_optimize():
 
     data = response.json()
 
-    assert "recommended_model" in data
-
-    assert "execution_model" not in data
-    assert data["execution_plan"][0]["model"] == data["recommended_model"]
-    assert data["recommendation"]["model"] == data["recommended_model"]
+    assert data["recommendation_id"]
+    assert data["recommendation"]["model"]
+    assert data["execution_plan"]["type"] == "recommendation_only"
+    assert data["execution_plan"]["steps"][0]["model"] == data["recommendation"]["model"]
     assert data["estimated_cost_detail"]["total_cost"] >= 0
     assert data["estimated_latency"]["lower_bound_ms"] > 0
     assert data["explanation"]["reasons"]
     assert data["tradeoffs"]
-    feedback = client.post("/feedback", json={"recommendation_id": data["recommendation"]["recommendation_id"], "success": True, "latency": 100, "actual_cost": 0.01})
+    feedback = client.post("/feedback", json={"recommendation_id": data["recommendation_id"], "success": True, "latency": 100, "actual_cost": 0.01})
     assert feedback.json()["accepted"] is True
     assert client.get("/metrics").status_code == 200
 
@@ -65,6 +64,7 @@ def test_openapi_describes_recommendation_only_api():
     optimize = schema["paths"]["/optimize"]["post"]
     assert optimize["summary"] == "Recommend an AI Strategy"
     assert "does not execute providers" in optimize["description"]
+    assert "DecisionResponse" in optimize["responses"]["200"]["content"]["application/json"]["schema"]["$ref"]
 
     feedback = schema["paths"]["/feedback"]["post"]
     assert feedback["summary"] == "Record Recommendation Feedback"

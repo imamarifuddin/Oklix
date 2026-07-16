@@ -1,11 +1,11 @@
 from core.experience_engine import ExperienceEngine
 from core.asp.request import ASPRequest
 from core.asp.request_parser import RequestParser
-from core.asp.response import ASPResponse
 from core.asp.response_builder import ResponseBuilder
 from core.provider_health import ProviderHealthRegistry
 from core.recommendation_builder import RecommendationBuilder
 from core.recommendation_history import HistoryItem, RecommendationHistory
+from domain import DecisionResponse
 from uuid import uuid4
 
 
@@ -30,7 +30,7 @@ class ASPService:
     def optimize(
         self,
         request: ASPRequest,
-    ) -> ASPResponse:
+    ) -> DecisionResponse:
         """
         Build the complete Decision Intelligence response.
         """
@@ -39,23 +39,18 @@ class ASPService:
             request,
         )
 
-        recommendation, profile, scores = self.recommendation_builder.build_with_details(task)
-
-        response = self.response_builder.build(
-            recommendation,
-            profile,
-            scores,
-        )
         recommendation_id = str(uuid4())
-        response.recommendation["recommendation_id"] = recommendation_id
+        response = self.response_builder.build(
+            self.recommendation_builder.build(task, recommendation_id)
+        )
         self.history.add(
             HistoryItem(
                 recommendation_id,
-                recommendation.provider,
-                recommendation.recommended_model,
-                recommendation.confidence,
-                recommendation.estimated_cost,
-                recommendation.estimated_latency_ms,
+                response.recommendation.provider,
+                response.recommendation.model,
+                response.confidence,
+                response.recommendation.estimated_cost,
+                response.recommendation.estimated_latency_ms,
             )
         )
         return response

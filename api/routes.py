@@ -6,9 +6,9 @@ from fastapi import APIRouter, status
 
 from api.version import DESCRIPTION, NAME, VERSION
 from core.asp.request import ASPRequest
-from core.asp.response import ASPResponse
 from core.asp.service import ASPService
 from api.models import FeedbackRequest
+from domain import DecisionResponse
 
 router = APIRouter()
 
@@ -78,7 +78,7 @@ The recommendation considers:
 
 Oklix does not execute providers, tools, or workflows.
 """,
-    response_model=ASPResponse,
+    response_model=DecisionResponse,
     response_description="Structured, non-executable decision recommendation",
     responses={
         200: {
@@ -86,13 +86,53 @@ Oklix does not execute providers, tools, or workflows.
             "content": {
                 "application/json": {
                     "example": {
-                        "strategy": "balanced",
-                        "recommended_provider": "openai",
-                        "recommended_model": "gpt-4.1-mini",
-                        "estimated_cost": 0.01,
-                        "estimated_latency_ms": 900,
+                        "recommendation_id": "9d72cc65-7f9c-4494-9b2e-0d4f77c5d0d8",
+                        "recommendation": {
+                            "strategy": "balanced",
+                            "provider": "openai",
+                            "model": "gpt-4.1-mini",
+                            "estimated_cost": 0.01,
+                            "estimated_latency_ms": 900,
+                            "confidence": 0.9,
+                            "reason": "Best balance of task fit, cost, and latency.",
+                        },
+                        "ranking": [],
+                        "alternatives": [],
+                        "estimated_cost_detail": {
+                            "input_tokens": 800,
+                            "output_tokens": 200,
+                            "cached_tokens": 0,
+                            "input_cost": 0.008,
+                            "output_cost": 0.002,
+                            "cached_cost": 0.0,
+                            "total_cost": 0.01,
+                            "calculation": "input + output + cached token pricing",
+                        },
+                        "estimated_latency": {
+                            "expected_ms": 900,
+                            "lower_bound_ms": 720,
+                            "upper_bound_ms": 1080,
+                            "confidence": 0.9,
+                            "factors": {},
+                        },
                         "confidence": 0.9,
-                        "reason": "Best balance of task fit, cost, and latency.",
+                        "tradeoffs": [],
+                        "explanation": {
+                            "summary": "Recommended model meets the selected profile.",
+                            "reasons": ["Highest explainable weighted score"],
+                            "confidence": 0.9,
+                            "factors": {},
+                        },
+                        "execution_plan": {
+                            "type": "recommendation_only",
+                            "steps": [
+                                {
+                                    "type": "provider_model_recommendation",
+                                    "provider": "openai",
+                                    "model": "gpt-4.1-mini",
+                                }
+                            ],
+                        },
                     }
                 }
             },

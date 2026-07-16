@@ -1,5 +1,7 @@
 """Decision-only response models for Oklix consumers."""
 
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 from .ranking import RankedModel
@@ -15,38 +17,46 @@ class RecommendedAction(BaseModel):
 
     model: str | None = None
 
-    tool_name: str | None = None
+
+class RecommendationPlan(BaseModel):
+    """A non-executable plan that the caller may use to perform a task."""
+
+    type: Literal["recommendation_only"] = "recommendation_only"
+
+    steps: list[RecommendedAction] = Field(default_factory=list)
+
+
+class RecommendationSummary(BaseModel):
+    """The selected strategy and model recommendation."""
+
+    strategy: str
+    provider: str
+    model: str
+    estimated_cost: float
+    estimated_latency_ms: int
+    confidence: float
+    reason: str
 
 
 class DecisionResponse(BaseModel):
     """Complete Decision Intelligence response returned to caller agents."""
 
-    strategy: str
+    recommendation_id: str
 
-    recommended_provider: str
-
-    recommended_model: str
-
-    estimated_cost: float
-
-    estimated_latency_ms: int
-
-    confidence: float
-
-    reason: str
+    recommendation: RecommendationSummary
 
     ranking: list[RankedModel] = Field(default_factory=list)
 
-    execution_plan: list[RecommendedAction] = Field(default_factory=list)
-
-    recommendation: dict = Field(default_factory=dict)
-
     alternatives: list[TradeoffRecommendation] = Field(default_factory=list)
 
-    explanation: RecommendationExplanation | None = None
+    estimated_cost_detail: CostEstimate
 
-    estimated_cost_detail: CostEstimate | None = None
+    estimated_latency: LatencyEstimate
 
-    estimated_latency: LatencyEstimate | None = None
+    confidence: float
 
     tradeoffs: list[TradeoffRecommendation] = Field(default_factory=list)
+
+    explanation: RecommendationExplanation
+
+    execution_plan: RecommendationPlan

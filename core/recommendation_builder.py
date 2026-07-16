@@ -2,37 +2,89 @@
 Recommendation Builder.
 
 Compose the complete Decision Intelligence pipeline into a single
-Recommendation object.
+DecisionResponse object.
 """
 
 from core.analyzer import Analyzer
+from core.cost_engine import CostEngine
+from core.explanation_engine import RecommendationExplanationEngine
+from core.latency_engine import LatencyEngine
 from core.ranking_engine import RankingEngine
+from core.registry import ModelRegistry
 from core.scoring import ScoringEngine
 from core.strategy_engine import StrategyEngine
+from core.tradeoff_engine import TradeoffEngine
 
-from domain import Recommendation, TaskRequest
+from domain import (
+    DecisionResponse,
+    RecommendedAction,
+    Recommendation,
+    RecommendationPlan,
+    RecommendationSummary,
+    TaskRequest,
+)
 
 
 class RecommendationBuilder:
-    """
-    Build a Recommendation from a TaskRequest.
-    """
+    """Build a complete DecisionResponse from a TaskRequest."""
 
     def __init__(self) -> None:
         self.analyzer = Analyzer()
         self.strategy_engine = StrategyEngine()
         self.scoring_engine = ScoringEngine()
         self.ranking_engine = RankingEngine()
+        self.cost_engine = CostEngine()
+        self.latency_engine = LatencyEngine()
+        self.explanation_engine = RecommendationExplanationEngine()
+        self.tradeoff_engine = TradeoffEngine()
+        self.model_registry = ModelRegistry()
 
-    def build(
-        self,
-        request: TaskRequest,
-    ) -> Recommendation:
-        """
-        Execute the complete Decision Intelligence pipeline.
-        """
+    def build(self, request: TaskRequest, recommendation_id: str) -> DecisionResponse:
+        """Build the complete, non-executable DecisionResponse v2."""
 
-        return self.build_with_details(request)[0]
+        recommendation, profile, scores = self.build_with_details(request)
+        capability = self.model_registry.get(recommendation.recommended_model)
+        selected_score = next(
+            score
+            for score in scores
+            if score.name == recommendation.recommended_model
+        )
+        tradeoffs = self.tradeoff_engine.build(recommendation.ranking)
+
+        return DecisionResponse(
+            recommendation_id=recommendation_id,
+            recommendation=RecommendationSummary(
+                strategy=recommendation.strategy,
+                provider=recommendation.provider,
+                model=recommendation.recommended_model,
+                estimated_cost=recommendation.estimated_cost,
+                estimated_latency_ms=recommendation.estimated_latency_ms,
+                confidence=recommendation.confidence,
+                reason=recommendation.reason,
+            ),
+            ranking=recommendation.ranking,
+            alternatives=tradeoffs,
+            estimated_cost_detail=self.cost_engine.estimate_detailed(
+                profile,
+                capability,
+            ),
+            estimated_latency=self.latency_engine.estimate(profile, capability),
+            confidence=recommendation.confidence,
+            tradeoffs=tradeoffs,
+            explanation=self.explanation_engine.explain(
+                recommendation.ranking[0],
+                selected_score,
+            ),
+            execution_plan=RecommendationPlan(
+                steps=[
+                    RecommendedAction(
+                        type="provider_model_recommendation",
+                        provider=recommendation.provider,
+                        model=recommendation.recommended_model,
+                    )
+                ]
+            ),
+        )
 
     def build_with_details(
         self,

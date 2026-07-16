@@ -1,7 +1,6 @@
-from core.asp.response import ASPResponse
 from core.asp.response_builder import ResponseBuilder
-
-from domain import Recommendation
+from core.recommendation_builder import RecommendationBuilder
+from domain import DecisionResponse, TaskRequest
 
 
 def test_builder_exists():
@@ -15,42 +14,20 @@ def test_build():
 
     builder = ResponseBuilder()
 
-    recommendation = Recommendation(
-        strategy="balanced",
-        provider="openai",
-        recommended_model="gpt-4.1-mini",
-        estimated_cost=0.001,
-        estimated_latency_ms=900,
-        confidence=0.95,
-        reason="test",
-    )
-
     response = builder.build(
-        recommendation,
+        RecommendationBuilder().build(TaskRequest(task="chat"), "builder-test-id")
     )
 
-    assert isinstance(
-        response,
-        ASPResponse,
-    )
+    assert isinstance(response, DecisionResponse)
 
 
 def test_model():
 
     builder = ResponseBuilder()
 
-    recommendation = Recommendation(
-        strategy="balanced",
-        provider="openai",
-        recommended_model="gpt-4.1-mini",
-        estimated_cost=0.001,
-        estimated_latency_ms=900,
-        confidence=0.95,
-        reason="test",
-    )
-
     response = builder.build(
-        recommendation,
+        RecommendationBuilder().build(TaskRequest(task="chat"), "model-test-id")
     )
 
-    assert response.recommended_model == "gpt-4.1-mini"
+    assert response.recommendation.model
+    assert response.recommendation_id == "model-test-id"

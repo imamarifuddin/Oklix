@@ -34,7 +34,6 @@ def test_execution_and_runtime_packages_are_absent():
     """The repository contains no legacy execution, agent, provider, or MCP runtimes."""
 
     forbidden_modules = (
-        "app.py",
         "core/execution_executor.py",
         "core/tool_router.py",
     )

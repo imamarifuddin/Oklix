@@ -1,31 +1,13 @@
-from core.asp.response import ASPResponse
+from core.recommendation_builder import RecommendationBuilder
+from domain import DecisionResponse, TaskRequest
 
 
-def test_response_exists():
+def test_response_is_decision_response_v2():
+    """The core response model is recommendation-only and fully structured."""
 
-    response = ASPResponse(
-        strategy="balanced",
-        recommended_provider="openai",
-        recommended_model="gpt-4.1-mini",
-        estimated_cost=0.001,
-        estimated_latency_ms=900,
-        confidence=0.95,
-        reason="test",
-    )
+    response = RecommendationBuilder().build(TaskRequest(task="chat"), "response-id")
 
-    assert response is not None
-
-
-def test_model():
-
-    response = ASPResponse(
-        strategy="balanced",
-        recommended_provider="openai",
-        recommended_model="gpt-4.1-mini",
-        estimated_cost=0.001,
-        estimated_latency_ms=900,
-        confidence=0.95,
-        reason="test",
-    )
-
-    assert response.recommended_model == "gpt-4.1-mini"
+    assert isinstance(response, DecisionResponse)
+    assert response.recommendation.model
+    assert response.execution_plan.type == "recommendation_only"
+    assert response.execution_plan.steps[0].provider == response.recommendation.provider

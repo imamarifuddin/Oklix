@@ -22,6 +22,8 @@ from .recommendation import Recommendation
 from .decision_response import (
     DecisionResponse,
     RecommendedAction,
+    RecommendationPlan,
+    RecommendationSummary,
 )
 
 from .decision_metrics import (
@@ -46,6 +48,8 @@ __all__ = [
     "Recommendation",
     "DecisionResponse",
     "RecommendedAction",
+    "RecommendationPlan",
+    "RecommendationSummary",
     "CostEstimate",
     "LatencyEstimate",
     "RecommendationExplanation",
