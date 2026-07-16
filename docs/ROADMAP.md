@@ -1,74 +1,77 @@
-# Roadmap
-
-## Phase 1
-
-Core Engine
-
-- [ ] Domain
-- [ ] Registry
-- [ ] Capability Engine
-- [ ] Analyzer
-- [ ] Scoring
-- [ ] Ranking
-- [ ] Optimizer
-- [ ] Decision Engine
+# Oklix Roadmap
 
 ---
 
-## Phase 2
+# Version 0.1
 
-Decision Intelligence
+Decision Core
 
-- [ ] Strategy Planner
-- [ ] Multi-Step Reasoning
-- [ ] Tool Selection
-- [ ] Model Selection
-- [ ] Context Optimizer
+Status
 
----
+Completed
 
-## Phase 3
+Includes
 
-Enterprise
-
-- [ ] REST API
-
-- [ ] SDK
-
-- [ ] Dashboard
-
-- [ ] Authentication
-
-- [ ] Analytics
+- Analyzer
+- Ranking
+- Capability
+- Cost
+- Latency
+- Recommendation
+- Tradeoff
+- Explanation
 
 ---
 
-## Phase 4
+# Version 0.2
 
-AI Agent
+Adaptive Intelligence
 
-- [ ] Agent Planner
+Status
 
-- [ ] MCP
+Completed (MVP)
 
-- [ ] Agent Routing
+Includes
 
-- [ ] Memory
-
-- [ ] Agent Collaboration
+- Provider Knowledge
+- Provider Health
+- Experience Engine
+- Feedback Loop
+- Adaptive Scoring
+- Recommendation History
 
 ---
 
-## Phase 5
+# Version 1.0
 
-Cloud Platform
+Public Release
 
-- [ ] Billing
+Current Target
 
-- [ ] Marketplace
+Objectives
 
-- [ ] SaaS
+- Stable API
+- Documentation
+- Open Source
+- GitHub Release
+- OKX Hackathon Submission
 
-- [ ] Monitoring
+---
 
-- [ ] Deployment
+# Version 2.0
+
+Enterprise Platform
+
+Future
+
+Potential Features
+
+- Live provider pricing
+- Live provider status
+- Benchmark synchronization
+- Enterprise policies
+- Multi-provider comparison API
+- Analytics
+- Reporting
+- SLA optimization
+- Budget optimization

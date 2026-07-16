@@ -50,6 +50,4 @@ def test_optimize():
 
     assert response.recommended_model != ""
 
-    assert response.execution_provider != ""
-
-    assert response.execution_model != ""
+    assert response.execution_plan[0].provider == response.recommended_provider

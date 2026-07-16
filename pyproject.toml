@@ -4,13 +4,46 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oklix"
-version = "0.1.0"
-description = "Decision Intelligence MCP for AI Agents"
+version = "1.0.0rc1"
+description = "Decision Intelligence Engine for AI model recommendations"
+readme = "README.md"
 requires-python = ">=3.11"
+
+authors = [
+    {name = "Imam Arifuddin"}
+]
+
+license = {text = "MIT"}
+
+keywords = [
+    "decision intelligence",
+    "ai",
+    "fastapi",
+    "model selection",
+    "optimization"
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Framework :: FastAPI",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["api*","domain*", "core*", "oklix_mcp*", "app*"]
+include = [
+    "api*",
+    "core*",
+    "domain*",
+    "registry*",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -1,135 +1,89 @@
-# Architecture
+# Oklix Architecture
 
-## High Level
+Current Architecture
 
-User
+```
+Caller Agent
+      │
+      ▼
+ Oklix API
+      │
+      ▼
+ ASP Service
+      │
+      ▼
+ Recommendation Builder
+      │
+      ├── Analyzer
+      ├── Capability Engine
+      ├── Cost Engine
+      ├── Latency Engine
+      ├── Ranking Engine
+      ├── Tradeoff Engine
+      ├── Explanation Engine
+      ├── Provider Knowledge
+      ├── Provider Health
+      ├── Experience Engine
+      └── Recommendation History
+      │
+      ▼
+ Decision Response
+      │
+      ▼
+ Caller Agent Executes
+```
 
-↓
+---
 
-Decision Engine
-
-↓
+# Responsibilities
 
 Analyzer
 
-↓
+- Understand task
 
 Capability Engine
 
-↓
+- Evaluate model capabilities
 
-Scoring Engine
+Cost Engine
 
-↓
+- Estimate execution cost
 
-Ranking Engine
+Latency Engine
 
-↓
-
-Optimizer
-
-↓
-
-Recommendation
-
----
-
-## Module Responsibilities
-
-Analyzer
-
-Input
-
-TaskRequest
-
-Output
-
-TaskProfile
-
-Responsibility
-
-- token estimation
-- task complexity
-- task size
-
----
-
-Registry
-
-Load seluruh konfigurasi model AI
-dari YAML.
-
----
-
-Capability Engine
-
-Memeriksa:
-
-- vision
-
-- reasoning
-
-- json mode
-
-- streaming
-
-- function calling
-
-- context window
-
----
-
-Scoring Engine
-
-Menghasilkan skor numerik.
-
-Quality
-
-Cost
-
-Latency
-
-Capability
-
-Strength
-
-↓
-
-Score
-
----
+- Estimate latency
 
 Ranking Engine
 
-Mengurutkan model
-berdasarkan score.
+- Rank candidate models
+
+Tradeoff Engine
+
+- Compare alternatives
+
+Explanation Engine
+
+- Explain recommendations
+
+Recommendation Builder
+
+- Produce final recommendation
 
 ---
 
-Optimizer
+# Out of Scope
 
-Menghasilkan Recommendation.
+The following MUST NOT exist inside Oklix.
 
----
+- AI execution
+- Agent execution
+- Workflow execution
+- Tool execution
+- Filesystem execution
+- Browser execution
+- Web search execution
+- MCP runtime
+- Multi-agent orchestration
+- Provider SDK execution
 
-Decision Engine
-
-Pipeline utama.
-
-Input
-
-↓
-
-Analyzer
-
-↓
-
-Ranking
-
-↓
-
-Optimizer
-
-↓
-
-Recommendation
+These responsibilities belong to caller agents.

@@ -79,3 +79,14 @@ def test_first_has_highest_score():
     best = engine.best(ranking)
 
     assert best.rank == 1
+
+
+def test_ranked_model_includes_decision_metadata():
+    """Ranked entries retain the metadata needed by recommendation consumers."""
+
+    profile = build_profile()
+    ranking = RankingEngine().build(profile, ScoringEngine().score_models(profile))
+
+    assert ranking[0].score >= ranking[1].score
+    assert ranking[0].provider
+    assert ranking[0].strength

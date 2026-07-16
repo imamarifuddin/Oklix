@@ -31,3 +31,11 @@ class ModelCapability(BaseModel):
     strengths: list[str] = Field(default_factory=list)
 
     weaknesses: list[str] = Field(default_factory=list)
+
+    capabilities: dict[str, float] = Field(default_factory=dict)
+
+    input_cost_per_1m_tokens: float | None = None
+
+    output_cost_per_1m_tokens: float | None = None
+
+    cached_cost_per_1m_tokens: float | None = None

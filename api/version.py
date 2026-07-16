@@ -1,12 +1,16 @@
-NAME = "Oklix ASP"
+NAME = "Oklix Decision Intelligence API"
 
-VERSION = "0.1.0"
+VERSION = "1.0.0-rc.1"
 
 DESCRIPTION = (
-    "Decision Intelligence Agent Service Provider "
-    "for AI Agents."
+    "Recommendation-only Decision Intelligence for AI execution strategies."
 )
 
-AUTHOR = "Oklix Team"
+CONTACT = {
+    "name": "Imam Arifuddin",
+    "url": "https://github.com/imamarifuddin",
+}
 
-LICENSE = "MIT"
+LICENSE = {
+    "name": "MIT",
+}

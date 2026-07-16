@@ -42,6 +42,10 @@ class ModelRegistry:
                 supports=config.get("supports", {}),
                 strengths=config.get("strengths", []),
                 weaknesses=config.get("weaknesses", []),
+                capabilities=config.get("capabilities", {}),
+                input_cost_per_1m_tokens=config.get("input_cost_per_1m_tokens"),
+                output_cost_per_1m_tokens=config.get("output_cost_per_1m_tokens"),
+                cached_cost_per_1m_tokens=config.get("cached_cost_per_1m_tokens"),
             )
 
     def get(

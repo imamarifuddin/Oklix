@@ -4,7 +4,7 @@ Optimizer.
 
 from core.cost_engine import CostEngine
 from core.provider_selector import ProviderSelector
-from core.ranking import RankingEngine
+from core.ranking_engine import RankingEngine
 from core.registry import ModelRegistry
 from core.scoring import ScoringEngine
 from core.strategy_engine import StrategyEngine
@@ -36,7 +36,7 @@ class Optimizer:
         profile: TaskProfile,
     ) -> Recommendation:
         """
-        Execute optimization pipeline.
+        Run the recommendation pipeline.
         """
 
         # --------------------------------------------------
@@ -63,8 +63,6 @@ class Optimizer:
             strategy=strategy,
             provider=capability.provider,
             recommended_model=capability.name,
-            execution_provider="qwen",
-            execution_model="qwen-plus",
             estimated_cost=estimated_cost,
             estimated_latency_ms=capability.latency_ms,
             confidence=0.90,

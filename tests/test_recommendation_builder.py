@@ -22,4 +22,4 @@ def test_build():
 
     assert recommendation.provider != ""
     assert recommendation.recommended_model != ""
-    assert recommendation.execution_provider == "qwen"
+    assert recommendation.reason

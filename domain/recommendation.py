@@ -15,11 +15,6 @@ class Recommendation(BaseModel):
 
     recommended_model: str
 
-    # Current execution backend (MVP)
-    execution_provider: str = "qwen"
-
-    execution_model: str = "qwen-plus"
-
     estimated_cost: float
 
     estimated_latency_ms: int

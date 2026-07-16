@@ -24,14 +24,20 @@ class ModelScore:
     quality_score: float
     speed_score: float
     provider: str
+    weights: dict[str, float]
+    factors: dict[str, float]
+    penalties: dict[str, float]
+    bonuses: dict[str, float]
 
 
 class ScoringEngine:
     """Calculate weighted scores for every registered model."""
 
-    def __init__(self) -> None:
+    def __init__(self, health_registry=None, experience_engine=None) -> None:
         self.registry = ModelRegistry()
         self.profile_registry = DecisionProfileRegistry()
+        self.health_registry = health_registry
+        self.experience_engine = experience_engine
 
     def score_models(
         self,
@@ -73,6 +79,23 @@ class ScoringEngine:
                 + quality_score * weights["quality"]
                 + speed_score * weights["speed"]
             )
+            penalties = {
+                "context_shortfall": 10.0
+                if capability.context_window < profile.total_tokens
+                else 0.0,
+            }
+            bonuses = {
+                "reasoning": 5.0
+                if capability.supports.get("reasoning")
+                else 0.0,
+            }
+            if self.health_registry:
+                health = self.health_registry.get(capability.provider)
+                bonuses["provider_health"] = round(health.score * 5, 2)
+            if self.experience_engine:
+                experience = self.experience_engine.get(capability.name)
+                bonuses["experience"] = experience.confidence_adjustment * 100
+            final_score = final_score - sum(penalties.values()) + sum(bonuses.values())
 
             results.append(
                 ModelScore(
@@ -82,6 +105,14 @@ class ScoringEngine:
                     quality_score=round(quality_score, 2),
                     speed_score=round(speed_score, 2),
                     provider=capability.provider,
+                    weights=dict(weights),
+                    factors={
+                        "cost": round(cost_score, 2),
+                        "quality": round(quality_score, 2),
+                        "speed": round(speed_score, 2),
+                    },
+                    penalties=penalties,
+                    bonuses=bonuses,
                 )
             )
 

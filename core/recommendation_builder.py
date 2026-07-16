@@ -6,7 +6,6 @@ Recommendation object.
 """
 
 from core.analyzer import Analyzer
-from core.provider_router import ProviderRouter
 from core.ranking_engine import RankingEngine
 from core.scoring import ScoringEngine
 from core.strategy_engine import StrategyEngine
@@ -24,7 +23,6 @@ class RecommendationBuilder:
         self.strategy_engine = StrategyEngine()
         self.scoring_engine = ScoringEngine()
         self.ranking_engine = RankingEngine()
-        self.provider_router = ProviderRouter()
 
     def build(
         self,
@@ -34,10 +32,17 @@ class RecommendationBuilder:
         Execute the complete Decision Intelligence pipeline.
         """
 
-        # Analyze the incoming task.
+        return self.build_with_details(request)[0]
+
+    def build_with_details(
+        self,
+        request: TaskRequest,
+    ) -> tuple[Recommendation, object, list]:
+        """Build a recommendation with analysis artifacts for response explainability."""
+
         profile = self.analyzer.analyze(request)
 
-        # Select the execution strategy.
+        # Select the recommended strategy.
         strategy = self.strategy_engine.recommend(profile)
 
         # Score every available model.
@@ -57,10 +62,6 @@ class RecommendationBuilder:
             provider=best.provider,
             recommended_model=best.model,
 
-            # Current MVP executes through Qwen.
-            execution_provider="qwen",
-            execution_model="qwen-plus",
-
             estimated_cost=best.estimated_cost,
             estimated_latency_ms=best.estimated_latency_ms,
             confidence=0.90,
@@ -70,9 +71,4 @@ class RecommendationBuilder:
             ranking=ranking,
         )
 
-        # Resolve the execution backend.
-        self.provider_router.resolve(
-            recommendation,
-        )
-
-        return recommendation
+        return recommendation, profile, scores
